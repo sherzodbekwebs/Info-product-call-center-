@@ -539,7 +539,7 @@ export const TRUCKS_DATA = [
         id: "17", category: "I", name: "Кран манипулятор 6,6 тн. на базе шасси КАМАЗ 65117-1029 6х4 19,5 м.", price: "1 332 800 000 сум", engine: "740.30-260", power: "260 л.с.", fuel: "Дизель", tank: "500 л.", formula: "6х4", load: "6,6", Объём: "x", Komplektatsiya: "Minimal komplektatsiya", img: "/images/16.png",
         Rasmiy_servis_mavjudligi: "8 ta sertifikatlangan servis markazi, mobil servis imkoniyati",
         Ehtiyot_qismlar_mavjudligi: "Respublika bo'ylab dilerlarda jami 2 mlrd so'mlik zaxira bor",
-        Moliyalashtirish: "Boshlang'ich to'lov 25% (210 000 000), yillik stavka 20%, muddati 36 oy. Yakuniy summa: 1 052 870 071",
+        Moliyalashtirish: "Boshlang‘ich to‘lov 25% (333 200 000), yillik stavka 20%, muddat 36 oy. Yakuniy summa: 1 670 553 845",
         Ekspluatatsiya_xususiyatlari: "2 yil yoki 75 ming km kafolat. Oddiy mexanika, ta'mirlash xarajatlari past, yoqilg'i tizimi injiq emas. MOB mavjud.",
         Yillik_saqlash_xarajatlari: "45 mln (materiallar + ish kuchi)",
         Kuchsiz_tomonlari: "Moy oqishi, radiator tez to'lishi, elektr tizimi va rul boshqaruvi nosozliklari.",
@@ -1185,7 +1185,7 @@ export const TRUCKS_DATA = [
         Снаряженная_масса_тн: "8,3",
     },
     {
-        id: "44", category: "I", name: "Полуприцеп тентовый 92м3", price: "504 000 000 сум", formula: "3-осная", load: "31,1", Komplektatsiya: "x", img: "/images/43.png",
+        id: "44", category: "I", name: "Полуприцеп тентовый 92м3", price: "456 000 000 сум", formula: "3-осная", load: "31,1", Komplektatsiya: "x", img: "/images/43.png",
         Rasmiy_servis_mavjudligi: "8 ta sertifikatlangan servis markazi, mobil servis tashkil qilish imkoniyati",
         Ehtiyot_qismlar_mavjudligi: "Samarqand shahridagi ehtiyot qismlar ombori",
         Moliyalashtirish: "Boshlang'ich to'lov 25%, yillik stavka 20%, muddati 36 oy",
