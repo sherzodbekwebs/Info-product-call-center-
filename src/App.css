@@ -1,0 +1,408 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: #f1f5f9;
+}
+
+.app-container {
+    max-width: 1750px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+/* --- FILTER --- */
+.filter-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 35px;
+}
+
+.filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.filter-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 20px;
+    min-width: 140px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-uz {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.btn-ru {
+    font-size: 11px;
+    color: #64748b;
+}
+
+.filter-btn.active {
+    background: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.filter-btn.active .btn-uz,
+.filter-btn.active .btn-ru {
+    color: #fff;
+}
+
+/* --- CATALOG GRID --- */
+.truck-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+}
+
+/* Katalogga qaytish tugmasi stili */
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 22px;
+    background-color: #ffffff; /* Oq fon */
+    color: #1e293b; /* To'q rangli matn */
+    border: 1px solid #e2e8f0; /* Mayin chegara */
+    border-radius: 12px; /* Yumaloq burchaklar */
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Yengil soya */
+}
+
+/* Tugma ustiga sichqoncha kelganda */
+.back-btn:hover {
+    background-color: #f8fafc;
+    border-color: #3b82f6; /* Moviy chegara */
+    color: #3b82f6; /* Moviy matn */
+    transform: translateX(-4px); /* Chapga biroz siljish (orqaga qaytish ishorasi) */
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+/* Tugma ichidagi ikonka harakati */
+.back-btn svg {
+    transition: transform 0.3s ease;
+}
+
+.back-btn:hover svg {
+    transform: scale(1.1);
+}
+
+/* Tugma bosilganda (active holati) */
+.back-btn:active {
+    transform: scale(0.96) translateX(-4px);
+}
+
+.truck-card {
+    background: #fff;
+    border-radius: 15px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.truck-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-image-box {
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    padding: 10px;
+}
+
+.card-image-box img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.card-info-box {
+    padding: 15px;
+}
+
+.truck-title {
+    font-size: 14px;
+    font-weight: 700;
+    height: 36px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.truck-price {
+    color: #3b82f6;
+    font-weight: 800;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.truck-meta {
+    display: flex;
+    gap: 8px;
+}
+
+.truck-meta span {
+    font-size: 10px;
+    background: #f1f5f9;
+    padding: 3px 7px;
+    border-radius: 5px;
+    color: #64748b;
+    font-weight: 600;
+}
+
+/* --- DETAILS PAGE --- */
+.app-containerr {
+    width: 100%;
+}
+
+.sticky-nav {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    padding: 15px 30px;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.details-page {
+    max-width: 100%;
+    margin: 30px;
+    background: #fff;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.details-content {
+    padding: 40px;
+}
+
+.details-header-flex {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.main-details-img {
+    width: 280px;
+    object-fit: contain;
+}
+
+.details-price {
+    font-size: 32px;
+    font-weight: 800;
+    color: #3b82f6;
+}
+
+.spec-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    margin: 30px 0;
+}
+
+.spec-card {
+    background: #f8fafc;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.spec-card b {
+    font-size: 11px;
+    color: #64748b;
+    text-transform: uppercase;
+}
+
+.spec-card span {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.info-section-item {
+    padding: 25px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.info-section-item strong {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+
+.service-bg {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+
+.usage-bg {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+}
+
+.finance-bg {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+}
+
+.properties-bg {
+    background: #faf5ff;
+    border: 1px solid #e9d5ff;
+}
+
+.cost-bg {
+    background: #fff7ed;
+    border: 1px solid #ffedd5;
+}
+
+.weak-bg {
+    background: #fff1f2;
+    border: 1px solid #fecdd3;
+}
+
+.offers-bg {
+    background: #fefce8;
+    border: 1px solid #fef08a;
+}
+
+.offer-img {
+    margin-top: 20px;
+    border-radius: 15px;
+    max-width: 300px;
+}
+
+.package-info-box {
+    background: #f1f5f9;
+    padding: 20px;
+    border-radius: 12px;
+    margin: 20px 0;
+    border-left: 5px solid #3b82f6;
+}
+
+/* --- COMPETITORS GRID (Yangi) --- */
+.competitors-section {
+    margin-top: 50px;
+    padding-top: 30px;
+    border-top: 2px solid #e2e8f0;
+}
+
+.section-title-flex {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.competitors-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+}
+
+.competitor-card {
+    background: #fff;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.comp-img-container {
+    height: 180px;
+    background: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.comp-img-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.comp-body {
+    padding: 20px;
+}
+
+.comp-name {
+    font-size: 18px;
+    font-weight: 800;
+    margin: 0 0 5px 0;
+    color: #0f172a;
+}
+
+.comp-price-tag {
+    font-size: 17px;
+    color: #e11d48;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.comp-specs-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.mini-badge {
+    background: #f1f5f9;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+}
+
+.comp-detailed-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.comp-info-line {
+    font-size: 13px;
+    padding: 8px;
+    background: #f8fafc;
+    border-radius: 8px;
+}
+
+@media (max-width: 1400px) {
+    .truck-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .competitors-grid {
+        grid-template-columns: 1fr;
+    }
+}
