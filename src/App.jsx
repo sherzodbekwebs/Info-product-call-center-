@@ -12,6 +12,7 @@ import { TRUCKS_DATA } from './data.jsx';
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   useEffect(() => {
+    // Faqat asosiy sahifada bo'lmasakgina tepaga chiqaradi
     if (pathname !== "/") {
       window.scrollTo(0, 0);
     }
@@ -24,23 +25,17 @@ const latinToCyrillic = (str) => {
   if (!str) return "";
   const mapping = {
     'sh': 'ш', 'ch': 'ч', 'yu': 'ю', 'ya': 'я', 'yo': 'ё', 'ts': 'ц',
-    'c': 'ц', // Avtocisterna deb yozsa ham topishi uchun
-    'a': 'а', 'b': 'б', 'v': 'в', 'g': 'г', 'd': 'д', 'e': 'е', 'j': 'ж',
+    'c': 'ц', 'a': 'а', 'b': 'б', 'v': 'в', 'g': 'г', 'd': 'д', 'e': 'е', 'j': 'ж',
     'z': 'з', 'i': 'и', 'y': 'й', 'k': 'к', 'l': 'л', 'm': 'м', 'n': 'н',
     'o': 'о', 'p': 'п', 'r': 'р', 's': 'с', 't': 'т', 'u': 'у', 'f': 'ф',
     'x': 'х', 'q': 'қ', "g'": 'ғ', "o'": 'ў', 'h': 'ҳ', ' ': ' '
   };
-
   let res = str.toLowerCase();
-  // Birikmalarni birinchi almashtiramiz
   ['sh', 'ch', 'yu', 'ya', 'yo', 'ts'].forEach(char => {
     res = res.split(char).join(mapping[char]);
   });
-  // Keyin alohida harflarni
   Object.keys(mapping).forEach(char => {
-    if (char.length === 1) {
-      res = res.split(char).join(mapping[char]);
-    }
+    if (char.length === 1) res = res.split(char).join(mapping[char]);
   });
   return res;
 };
@@ -58,7 +53,7 @@ const cyrillicToLatin = (str) => {
   return str.toLowerCase().split('').map(char => mapping[char] || char).join('');
 };
 
-// --- QIDIRUVDA HARFLARNI BO'YASH ---
+// --- QIDIRUVDA HARFLARNI BO'YASH (Highlighting) ---
 const HighlightText = ({ text, highlight }) => {
   if (!text || !highlight.trim()) return <span>{text}</span>;
   const cyrHighlight = latinToCyrillic(highlight);
@@ -77,12 +72,13 @@ const HighlightText = ({ text, highlight }) => {
 const CatalogPage = () => {
   const navigate = useNavigate();
 
-  // State-larni sessionStorage-dan tiklash
+  // State-larni sessionStorage-dan o'qiymiz (eslab qolish uchun)
   const [activeCat, setActiveCat] = useState(sessionStorage.getItem('cat') || "All");
   const [activeFormula, setActiveFormula] = useState(sessionStorage.getItem('formula') || "All"); 
   const [searchTerm, setSearchTerm] = useState(sessionStorage.getItem('search') || "");
   const [showSuggestions, setShowSuggestions] = useState(false);
 
+  // Filtrlar o'zgarganda ularni xotiraga saqlaymiz
   useEffect(() => {
     sessionStorage.setItem('cat', activeCat);
     sessionStorage.setItem('formula', activeFormula);
@@ -116,6 +112,7 @@ const CatalogPage = () => {
     const tFormula = (t.formula || "").toLowerCase();
     const sTerm = searchTerm.toLowerCase();
     
+    // Kategoriya mantiqi
     let matchesCategory = false;
     if (activeCat === "All") matchesCategory = true;
     else if (activeCat === "Tyagach") matchesCategory = idNum >= 1 && idNum <= 4;
@@ -152,16 +149,16 @@ const CatalogPage = () => {
     { uz: "Барчаси", ru: "Все", val: "All" },
     { uz: "Тягач", ru: "Тягач", val: "Tyagach" },
     { uz: "Самосвал", ru: "Самосвал", val: "Samosval" },
-    { uz: "Фургонлар", ru: "Фургоны", val: "Furgon" },
+    { uz: "Фургонлар ва бортли автомобиллар", ru: "Фургоны", val: "Furgon" },
     { uz: "Махсус техника", ru: "Спецтехника", val: "Special" },
-    { uz: "Тиркамалар", ru: "Прицепы", val: "Pritsep" },
+    { uz: "Тиркама техникаси", ru: "Прицепы", val: "Pritsep" },
     { uz: "ЖАК", ru: "JAC", val: "Jac" },
     { uz: "Шасси", ru: "Шасси", val: "Shassi" },
   ];
 
   return (
     <div className="app-container">
-      {/* Qidiruv inputi */}
+      {/* QIDIRUV INPUTI */}
       <div className="search-section" style={{ marginBottom: '15px', position: 'relative' }}>
         <div style={{
           position: 'relative',
@@ -175,7 +172,7 @@ const CatalogPage = () => {
           <Search size={20} color="#64748b" style={{ marginRight: '10px' }} />
           <input
             type="text"
-            placeholder="Texnika nomi (avtotsisterna yoki avcocisterna deb yozing)..."
+            placeholder="Texnika nomi yoki formula (Lotin/Kirill)..."
             value={searchTerm}
             onFocus={() => setShowSuggestions(true)}
             onChange={(e) => {
@@ -199,7 +196,7 @@ const CatalogPage = () => {
             boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
             marginTop: '5px',
             border: '1px solid #e2e8f0',
-            maxHeight: '200px',
+            maxHeight: '280px',
             overflowY: 'auto'
           }}>
             {suggestions.map(s => (
@@ -258,6 +255,7 @@ const CatalogPage = () => {
       </div>
 
       <div className="filter-wrapper">
+        <div className="filter-label"><Filter size={18} /> <span>Саралаш / Сортировка:</span></div>
         <div className="filter-buttons">
           {categories.map(cat => (
             <button key={cat.val} className={`filter-btn ${activeCat === cat.val ? 'active' : ''}`} onClick={() => setActiveCat(cat.val)}>
@@ -276,7 +274,7 @@ const CatalogPage = () => {
               <h3 className="truck-title">{truck.name}</h3>
               <div className="truck-price">{truck.price}</div>
               <div className="truck-meta">
-                <span style={{background: '#f1f5f9', padding: '2px 6px', borderRadius: '4px'}}>{truck.formula}</span>
+                <span>{truck.formula}</span>
               </div>
             </div>
           </div>
@@ -286,17 +284,18 @@ const CatalogPage = () => {
   );
 };
 
-// --- 2-САҲИФА: TRUCK DETAILS (O'zgarishsiz) ---
+// --- 2-САҲИФА: TRUCK DETAILS (O'zgarishsiz qoldi) ---
 const TruckDetails = () => {
   const { id } = useParams();
   const truck = TRUCKS_DATA.find(t => t.id === id);
-  if (!truck) return <div className="app-container">Техника топилмаdi!</div>;
+  if (!truck) return <div className="app-container">Техника топилмади!</div>;
 
   return (
     <div className="app-containerr">
       <div className="sticky-nav">
         <Link to="/" className="back-btn"><ArrowLeft size={18} /> Каталогга қайтиш</Link>
       </div>
+
       <div className="details-page">
         <div className="details-content">
           <div className="details-header-flex">
@@ -306,16 +305,115 @@ const TruckDetails = () => {
               <div className="details-price">{truck.price}</div>
             </div>
           </div>
+
           <div className="spec-grid">
-            <div className="spec-card"><Settings size={20} color="#64748b" /><b>ДВИГАТЕЛЬ</b><span>{truck.engine}</span></div>
-            <div className="spec-card"><Zap size={20} color="#64748b" /><b>МОЩНОСТЬ</b><span>{truck.power}</span></div>
-            <div className="spec-card"><Box size={20} color="#64748b" /><b>ФОРМУЛА</b><span>{truck.formula}</span></div>
+            {truck.engine && truck.engine !== "x" && (
+              <div className="spec-card">
+                <Settings size={20} color="#64748b" />
+                <b>ДВИГАТЕЛЬ</b>
+                <small style={{ fontSize: '10px', color: '#64748b', display: 'block', marginTop: '-2px', marginBottom: '5px' }}>Двигател</small>
+                <span>{truck.engine}</span>
+              </div>
+            )}
+            {truck.power && truck.power !== "x" && (
+              <div className="spec-card">
+                <Zap size={20} color="#64748b" />
+                <b>МОЩНОСТЬ</b>
+                <small style={{ fontSize: '10px', color: '#64748b', display: 'block', marginTop: '-2px', marginBottom: '5px' }}>Қуввати</small>
+                <span>{truck.power}</span>
+              </div>
+            )}
+            {truck.fuel && truck.fuel !== "x" && (
+              <div className="spec-card">
+                <Fuel size={20} color="#64748b" />
+                <b>ТОПЛИВО</b>
+                <small style={{ fontSize: '10px', color: '#64748b', display: 'block', marginTop: '-2px', marginBottom: '5px' }}>Ёқилғи</small>
+                <span>{truck.fuel}</span>
+              </div>
+            )}
+            {truck.tank && (truck.tank !== "x" || truck.category === "7") && (
+              <div className="spec-card">
+                <Gauge size={20} color="#64748b" />
+                <b>ОБЪЕМ БАКА</b>
+                <small style={{ fontSize: '10px', color: '#64748b', display: 'block', marginTop: '-2px', marginBottom: '5px' }}>Бак ҳажми</small>
+                <span>{truck.tank}</span>
+              </div>
+            )}
+            {truck.Снаряженная_масса_тн && truck.Снаряженная_масса_тн !== "" && (
+              <div className="spec-card">
+                <Scale size={20} color="#64748b" />
+                <b>МАССА</b>
+                <small style={{ fontSize: '10px', color: '#64748b', display: 'block', marginTop: '-2px', marginBottom: '5px' }}>Вазни</small>
+                <span>{truck.Снаряженная_масса_тн} тн</span>
+              </div>
+            )}
+            <div className="spec-card">
+              <Box size={20} color="#64748b" />
+              <b>ФОРМУЛА</b>
+              <small style={{ fontSize: '10px', color: '#64748b', display: 'block', marginTop: '-2px', marginBottom: '5px' }}>Формула</small>
+              <span>{truck.formula}</span>
+            </div>
+            {truck.load && truck.load !== "x" && (
+              <div className="spec-card">
+                <Weight size={20} color="#64748b" />
+                <b>ГРУЗОПОДЪЕМНОСТЬ</b>
+                <small style={{ fontSize: '10px', color: '#64748b', display: 'block', marginTop: '-2px', marginBottom: '5px' }}>Юк кўтариши</small>
+                <span>{truck.load} тн</span>
+              </div>
+            )}
           </div>
+
+          {truck.Komplektatsiya && truck.Komplektatsiya !== "x" && (
+            <div className="package-info-box">
+              <h4>Комплектация</h4>
+              <p>{truck.Komplektatsiya}</p>
+            </div>
+          )}
+
           <div className="extra-info-wrapper">
             <div className="info-section-item service-bg">
               <strong><MapPin size={20} color="#3b82f6" /> Сервис ва эҳтиёт қисмlar</strong>
               <p><b>Сервис:</b> {truck.Rasmiy_servis_mavjudligi}</p>
+              <p><b>Ehtiyot qismlar:</b> {truck.Ehtiyot_qismlar_mavjudligi}</p>
             </div>
+            {truck.Soha_va_vazifasi && (<div className="info-section-item usage-bg"><strong><Info size={20} color="#1e40af" /> Соҳа ва вазифаси</strong><p>{truck.Soha_va_vazifasi}</p></div>)}
+            {truck.Moliyalashtirish && (<div className="info-section-item finance-bg"><strong><CreditCard size={20} color="#166534" /> Молиялаштириш</strong><p>{truck.Moliyalashtirish}</p></div>)}
+            {truck.Ekspluatatsiya_xususiyatlari && (<div className="info-section-item properties-bg"><strong><Activity size={20} color="#6366f1" /> Эксплуатация хусусиятlari</strong><p>{truck.Ekspluatatsiya_xususiyatlari}</p></div>)}
+            {truck.Yillik_saqlash_xarajatlari && (<div className="info-section-item cost-bg"><strong><TrendingDown size={20} color="#ea580c" /> Йиллик сақлаш харажатlari</strong><p>{truck.Yillik_saqlash_xarajatlari}</p></div>)}
+            {truck.Kuchsiz_tomonlari && (<div className="info-section-item weak-bg"><strong><AlertTriangle size={20} color="#e11d48" /> Кучсиз томонлари</strong><p>{truck.Kuchsiz_tomonlari}</p></div>)}
+            {truck.Takliflar && (<div className="info-section-item offers-bg"><strong><FileText size={20} color="#854d0e" /> Таклифлар</strong><p>{truck.Takliflar}</p>{truck.img2 && <img src={truck.img2} alt="offer" className="offer-img" />}</div>)}
+
+            {truck.competitors && truck.competitors.length > 0 && (
+              <div className="competitors-section">
+                <div className="section-title-flex">
+                  <ArrowRightLeft size={28} color="#f59e0b" />
+                  <h2>Рақобатчилар ва солиштириш</h2>
+                </div>
+                <div className="competitors-grid">
+                  {truck.competitors.map((comp, index) => (
+                    <div className="competitor-card" key={index}>
+                      <div className="comp-img-container">
+                        {comp.imgk ? <img src={comp.imgk} alt={comp.name} /> : <span>Расм йўқ</span>}
+                      </div>
+                      <div className="comp-body">
+                        <h3 className="comp-name">{comp.name}</h3>
+                        <div className="comp-price-tag">{comp.price}</div>
+                        <div className="comp-specs-row">
+                          <div className="mini-badge"><b>Формула:</b> {comp.formula}</div>
+                          {comp.power && comp.power !== "x" && <div className="mini-badge"><b>Кучи:</b> {comp.power}</div>}
+                          {comp.load && comp.load !== "x" && <div className="mini-badge"><b>Юк:</b> {comp.load} тн</div>}
+                        </div>
+                        <div className="comp-detailed-info" style={{ marginTop: '10px', fontSize: '13px', color: '#475569', borderTop: '1px solid #f1f5f9', paddingTop: '10px' }}>
+                          {comp.Komplektatsiya && comp.Komplektatsiya !== "x" && <div className="comp-info-line"><strong>Комплектация:</strong> {comp.Komplektatsiya}</div>}
+                          {comp.Rasmiy_servis_mavjudligi && comp.Rasmiy_servis_mavjudligi !== "x" && <div className="comp-info-line"><strong>Сервис:</strong> {comp.Rasmiy_servis_mavjudligi}</div>}
+                          {comp.Moliyalashtirish && comp.Moliyalashtirish !== "x" && <div className="comp-info-line"><strong>Молия:</strong> {comp.Moliyalashtirish}</div>}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
