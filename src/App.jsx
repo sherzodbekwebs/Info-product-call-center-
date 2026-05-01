@@ -3,24 +3,79 @@ import { BrowserRouter, Routes, Route, Link, useParams, useNavigate, useLocation
 import {
   ArrowLeft, Settings, Zap, Fuel, Gauge, Box, Weight,
   MapPin, CreditCard, Activity, TrendingDown, AlertTriangle, FileText,
-  Maximize, Scale, ArrowRightLeft, Info, Filter, Search, Check
+  Scale, ArrowRightLeft, Info, Filter, Search, Check, Globe
 } from 'lucide-react';
 import './App.css';
 import { TRUCKS_DATA } from './data.jsx';
 
-// --- 0. SCROLLNI BOSHQARISH (Details sahifasiga kirganda tepaga chiqaradi) ---
+// --- TILLAR UCHUN LUG'AT (UI elementlari uchun) ---
+const UI_TEXT = {
+  uz: {
+    back: "Katalogga qaytish",
+    searchPlaceholder: "Texnika nomi yoki formula...",
+    allFormulas: "Barcha formulalar",
+    filterTitle: "Saralash:",
+    specs: {
+      engine: "DVIGATEL",
+      power: "QUVVATI",
+      fuel: "YOQILG'I",
+      tank: "BAK HAJMI",
+      weight: "VAZNI",
+      formula: "FORMULA",
+      load: "YUK KO'TARISHI"
+    },
+    sections: {
+      service: "Servis va ehtiyot qismlar",
+      usage: "Soha va vazifasi",
+      finance: "Moliyalashtirish",
+      features: "Ekspluatatsiya xususiyatlari",
+      costs: "Yillik saqlash xarajatlari",
+      weak: "Kuchsiz tomonlari",
+      offers: "Takliflar",
+      competitors: "Raqobatchilar va solishtirish"
+    },
+    noImage: "Rasm yo'q",
+    notfound: "Texnika topilmadi!"
+  },
+  ru: {
+    back: "Вернуться в каталог",
+    searchPlaceholder: "Название техники или формула...",
+    allFormulas: "Все формулы",
+    filterTitle: "Сортировка:",
+    specs: {
+      engine: "ДВИГАТЕЛЬ",
+      power: "МОЩНОСТЬ",
+      fuel: "ТОПЛИВО",
+      tank: "ОБЪЕМ БАКА",
+      weight: "МАССА",
+      formula: "ФОРМУЛА",
+      load: "ГРУЗОПОДЪЕМНОСТЬ"
+    },
+    sections: {
+      service: "Сервис и запчасти",
+      usage: "Сфера и задачи",
+      finance: "Финансирование",
+      features: "Особенности эксплуатации",
+      costs: "Ежегодные расходы",
+      weak: "Слабые стороны",
+      offers: "Предложения",
+      competitors: "Конкуренты и сравнение"
+    },
+    noImage: "Нет фото",
+    notfound: "Техника не найдена!"
+  }
+};
+
+// --- SCROLLNI BOSHQARISH ---
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   useEffect(() => {
-    // Faqat asosiy sahifada bo'lmasakgina tepaga chiqaradi
-    if (pathname !== "/") {
-      window.scrollTo(0, 0);
-    }
+    if (pathname !== "/") window.scrollTo(0, 0);
   }, [pathname]);
   return null;
 };
 
-// --- LOTINDAN KIRILLGA O'GIRISH (Transliteratsiya) ---
+// --- TRANSLITERATSIYA ---
 const latinToCyrillic = (str) => {
   if (!str) return "";
   const mapping = {
@@ -40,7 +95,6 @@ const latinToCyrillic = (str) => {
   return res;
 };
 
-// --- KIRILLDAN LOTINGA O'GIRISH (Aqlli qidiruv uchun) ---
 const cyrillicToLatin = (str) => {
   if (!str) return "";
   const mapping = {
@@ -53,7 +107,7 @@ const cyrillicToLatin = (str) => {
   return str.toLowerCase().split('').map(char => mapping[char] || char).join('');
 };
 
-// --- QIDIRUVDA HARFLARNI BO'YASH (Highlighting) ---
+// --- HIGHLIGHT ---
 const HighlightText = ({ text, highlight }) => {
   if (!text || !highlight.trim()) return <span>{text}</span>;
   const cyrHighlight = latinToCyrillic(highlight);
@@ -68,36 +122,48 @@ const HighlightText = ({ text, highlight }) => {
   );
 };
 
-// --- 1-САҲИФА: КАТАЛОГ ---
-const CatalogPage = () => {
-  const navigate = useNavigate();
+// --- TIL ALMASHTIRGICH KOMPONENTI ---
+const LanguageSwitcher = ({ lang, setLang }) => (
+  <div className="lang-switcher" style={{ display: 'flex', gap: '5px', marginBottom: '15px', justifyContent: 'flex-end' }}>
+    <button 
+      onClick={() => setLang('uz')} 
+      className={`lang-btn ${lang === 'uz' ? 'active' : ''}`}
+      style={{ padding: '5px 10px', borderRadius: '8px', cursor: 'pointer', border: '1px solid #e2e8f0', background: lang === 'uz' ? '#2563eb' : 'white', color: lang === 'uz' ? 'white' : '#64748b' }}
+    >
+      UZ
+    </button>
+    <button 
+      onClick={() => setLang('ru')} 
+      className={`lang-btn ${lang === 'ru' ? 'active' : ''}`}
+      style={{ padding: '5px 10px', borderRadius: '8px', cursor: 'pointer', border: '1px solid #e2e8f0', background: lang === 'ru' ? '#2563eb' : 'white', color: lang === 'ru' ? 'white' : '#64748b' }}
+    >
+      RU
+    </button>
+  </div>
+);
 
-  // State-larni sessionStorage-dan o'qiymiz (eslab qolish uchun)
+// --- 1-SAHIFA: KATALOG ---
+const CatalogPage = ({ lang, setLang }) => {
+  const navigate = useNavigate();
   const [activeCat, setActiveCat] = useState(sessionStorage.getItem('cat') || "All");
   const [activeFormula, setActiveFormula] = useState(sessionStorage.getItem('formula') || "All"); 
   const [searchTerm, setSearchTerm] = useState(sessionStorage.getItem('search') || "");
   const [showSuggestions, setShowSuggestions] = useState(false);
 
-  // Filtrlar o'zgarganda ularni xotiraga saqlaymiz
+  const t = UI_TEXT[lang];
+
   useEffect(() => {
     sessionStorage.setItem('cat', activeCat);
     sessionStorage.setItem('formula', activeFormula);
     sessionStorage.setItem('search', searchTerm);
   }, [activeCat, activeFormula, searchTerm]);
 
-  // SCROLL JOYINI SAQLASH VA QAYTARISH
   useLayoutEffect(() => {
     const savedScrollPos = sessionStorage.getItem('scrollPos');
     if (savedScrollPos) {
-      setTimeout(() => {
-        window.scrollTo(0, parseInt(savedScrollPos));
-      }, 50);
+      setTimeout(() => window.scrollTo(0, parseInt(savedScrollPos)), 50);
     }
-
-    const handleScroll = () => {
-      sessionStorage.setItem('scrollPos', window.scrollY.toString());
-    };
-
+    const handleScroll = () => sessionStorage.setItem('scrollPos', window.scrollY.toString());
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -105,14 +171,11 @@ const CatalogPage = () => {
   const cyrillicSearch = latinToCyrillic(searchTerm);
   const allFormulas = ["All", ...new Set(TRUCKS_DATA.map(t => t.formula).filter(Boolean))];
 
-  const filteredTrucks = TRUCKS_DATA.filter(t => {
-    const idNum = parseInt(t.id);
-    const tNameCyr = (t.name || "").toLowerCase();
+  const filteredTrucks = TRUCKS_DATA.filter(truck => {
+    const idNum = parseInt(truck.id);
+    const tNameCyr = (truck.name || "").toLowerCase();
     const tNameLat = cyrillicToLatin(tNameCyr);
-    const tFormula = (t.formula || "").toLowerCase();
-    const sTerm = searchTerm.toLowerCase();
     
-    // Kategoriya mantiqi
     let matchesCategory = false;
     if (activeCat === "All") matchesCategory = true;
     else if (activeCat === "Tyagach") matchesCategory = idNum >= 1 && idNum <= 4;
@@ -123,103 +186,52 @@ const CatalogPage = () => {
     else if (activeCat === "Jac") matchesCategory = idNum >= 51 && idNum <= 54;
     else if (activeCat === "Shassi") matchesCategory = idNum >= 55 && idNum <= 58;
 
-    const matchesFormula = activeFormula === "All" || t.formula === activeFormula;
-
-    // "y" -> "ya", "c" -> "ts" kabi aqlli qidiruv
-    const matchesSearch =
-      tNameCyr.includes(sTerm) ||
-      tNameCyr.includes(cyrillicSearch) ||
-      tNameLat.includes(sTerm) ||
-      tFormula.includes(sTerm);
+    const matchesFormula = activeFormula === "All" || truck.formula === activeFormula;
+    const matchesSearch = tNameCyr.includes(searchTerm.toLowerCase()) || 
+                          tNameCyr.includes(cyrillicSearch) || 
+                          tNameLat.includes(searchTerm.toLowerCase());
 
     return matchesCategory && matchesFormula && matchesSearch;
   });
 
   const suggestions = searchTerm.length > 0
-    ? TRUCKS_DATA.filter(t => {
-        const nameCyr = (t.name || "").toLowerCase();
-        const nameLat = cyrillicToLatin(nameCyr);
-        return nameCyr.includes(searchTerm.toLowerCase()) || 
-               nameCyr.includes(cyrillicSearch) ||
-               nameLat.includes(searchTerm.toLowerCase());
-      }).slice(0, 15) 
+    ? TRUCKS_DATA.filter(truck => {
+        const nameCyr = (truck.name || "").toLowerCase();
+        return nameCyr.includes(searchTerm.toLowerCase()) || nameCyr.includes(cyrillicSearch);
+      }).slice(0, 10) 
     : [];
 
   const categories = [
-    { uz: "Барчаси", ru: "Все", val: "All" },
-    { uz: "Тягач", ru: "Тягач", val: "Tyagach" },
-    { uz: "Самосвал", ru: "Самосвал", val: "Samosval" },
-    { uz: "Фургонлар ва бортли автомобиллар", ru: "Фургоны", val: "Furgon" },
-    { uz: "Махсус техника", ru: "Спецтехника", val: "Special" },
-    { uz: "Тиркама техникаси", ru: "Прицепы", val: "Pritsep" },
-    { uz: "ЖАК", ru: "JAC", val: "Jac" },
-    { uz: "Шасси", ru: "Шасси", val: "Shassi" },
+    { uz: "Barchasi", ru: "Все", val: "All" },
+    { uz: "Tyagach", ru: "Тягач", val: "Tyagach" },
+    { uz: "Samosval", ru: "Самосвал", val: "Samosval" },
+    { uz: "Furgonlar", ru: "Фургоны", val: "Furgon" },
+    { uz: "Maxsus texnika", ru: "Спецтехника", val: "Special" },
+    { uz: "Pritseplar", ru: "Прицепы", val: "Pritsep" },
+    { uz: "JAC", ru: "JAC", val: "Jac" },
+    { uz: "Shassi", ru: "Шасси", val: "Shassi" },
   ];
 
   return (
     <div className="app-container">
-      {/* QIDIRUV INPUTI */}
+      <LanguageSwitcher lang={lang} setLang={setLang} />
+
       <div className="search-section" style={{ marginBottom: '15px', position: 'relative' }}>
-        <div style={{
-          position: 'relative',
-          display: 'flex',
-          alignItems: 'center',
-          background: '#f1f5f9',
-          borderRadius: '12px',
-          padding: '10px 15px',
-          border: '1px solid #e2e8f0'
-        }}>
+        <div className="search-box-inner" style={{ display: 'flex', alignItems: 'center', background: '#f1f5f9', borderRadius: '12px', padding: '10px 15px' }}>
           <Search size={20} color="#64748b" style={{ marginRight: '10px' }} />
           <input
             type="text"
-            placeholder="Texnika nomi yoki formula (Lotin/Kirill)..."
+            placeholder={t.searchPlaceholder}
             value={searchTerm}
             onFocus={() => setShowSuggestions(true)}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setShowSuggestions(true);
-            }}
+            onChange={(e) => setSearchTerm(e.target.value)}
             style={{ border: 'none', background: 'transparent', outline: 'none', width: '100%', fontSize: '16px' }}
           />
-          {searchTerm && <button onClick={() => { setSearchTerm(""); setShowSuggestions(false) }} style={{ border: 'none', background: 'none', cursor: 'pointer' }}>✕</button>}
         </div>
-
         {showSuggestions && suggestions.length > 0 && (
-          <div className="search-suggestions" style={{
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            right: 0,
-            background: 'white',
-            zIndex: 100,
-            borderRadius: '12px',
-            boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
-            marginTop: '5px',
-            border: '1px solid #e2e8f0',
-            maxHeight: '280px',
-            overflowY: 'auto'
-          }}>
+          <div className="search-suggestions-dropdown">
             {suggestions.map(s => (
-              <div
-                key={s.id}
-                onClick={() => {
-                  setSearchTerm(s.name || "");
-                  setShowSuggestions(false);
-                }}
-                style={{
-                  padding: '12px 15px',
-                  cursor: 'pointer',
-                  borderBottom: '1px solid #f1f5f9',
-                  fontSize: '14px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  color: '#1e293b'
-                }}
-                onMouseEnter={(e) => e.target.style.background = '#f8fafc'}
-                onMouseLeave={(e) => e.target.style.background = 'transparent'}
-              >
-                <Search size={14} color="#94a3b8" />
+              <div key={s.id} onClick={() => { setSearchTerm(s.name); setShowSuggestions(false); }} className="suggestion-item">
                 <HighlightText text={s.name} highlight={searchTerm} />
               </div>
             ))}
@@ -227,40 +239,20 @@ const CatalogPage = () => {
         )}
       </div>
 
-      {/* FORMULA FILTRI */}
-      <div className="formula-chips" style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '12px', marginBottom: '10px' }}>
+      <div className="formula-chips">
         {allFormulas.map(f => (
-          <button 
-            key={f} 
-            onClick={() => setActiveFormula(f)}
-            style={{ 
-              padding: '6px 14px', 
-              borderRadius: '20px', 
-              fontSize: '12px', 
-              whiteSpace: 'nowrap',
-              border: '1px solid',
-              borderColor: activeFormula === f ? '#2563eb' : '#e2e8f0',
-              background: activeFormula === f ? '#eff6ff' : 'white',
-              color: activeFormula === f ? '#2563eb' : '#64748b',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px'
-            }}
-          >
-            {activeFormula === f && <Check size={12} />}
-            {f === "All" ? "Barcha formulalar" : f}
+          <button key={f} onClick={() => setActiveFormula(f)} className={`chip ${activeFormula === f ? 'active' : ''}`}>
+            {f === "All" ? t.allFormulas : f}
           </button>
         ))}
       </div>
 
       <div className="filter-wrapper">
-        <div className="filter-label"><Filter size={18} /> <span>Саралаш / Сортировка:</span></div>
+        <div className="filter-label"><Filter size={18} /> <span>{t.filterTitle}</span></div>
         <div className="filter-buttons">
           {categories.map(cat => (
             <button key={cat.val} className={`filter-btn ${activeCat === cat.val ? 'active' : ''}`} onClick={() => setActiveCat(cat.val)}>
-              <span className="btn-uz">{cat.uz}</span>
-              <span className="btn-ru">{cat.ru}</span>
+              {cat[lang]}
             </button>
           ))}
         </div>
@@ -273,9 +265,7 @@ const CatalogPage = () => {
             <div className="card-info-box">
               <h3 className="truck-title">{truck.name}</h3>
               <div className="truck-price">{truck.price}</div>
-              <div className="truck-meta">
-                <span>{truck.formula}</span>
-              </div>
+              <div className="truck-meta"><span>{truck.formula}</span></div>
             </div>
           </div>
         ))}
@@ -284,16 +274,25 @@ const CatalogPage = () => {
   );
 };
 
-// --- 2-САҲИФА: TRUCK DETAILS (O'zgarishsiz qoldi) ---
-const TruckDetails = () => {
+// --- 2-SAHIFA: TRUCK DETAILS ---
+const TruckDetails = ({ lang, setLang }) => {
   const { id } = useParams();
   const truck = TRUCKS_DATA.find(t => t.id === id);
-  if (!truck) return <div className="app-container">Техника топилмади!</div>;
+  const ui = UI_TEXT[lang];
+
+  if (!truck) return <div className="app-container">{ui.notfound}</div>;
+
+  // Yordamchi funksiya: Agar ma'lumot obyekt bo'lsa tanlangan tilni qaytaradi, aks holda o'zini
+  const getLangVal = (field) => {
+    if (field && typeof field === 'object') return field[lang] || field['uz'];
+    return field;
+  };
 
   return (
     <div className="app-containerr">
-      <div className="sticky-nav">
-        <Link to="/" className="back-btn"><ArrowLeft size={18} /> Каталогга қайтиш</Link>
+      <div className="sticky-nav" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Link to="/" className="back-btn"><ArrowLeft size={18} /> {ui.back}</Link>
+        <LanguageSwitcher lang={lang} setLang={setLang} />
       </div>
 
       <div className="details-page">
@@ -310,54 +309,47 @@ const TruckDetails = () => {
             {truck.engine && truck.engine !== "x" && (
               <div className="spec-card">
                 <Settings size={20} color="#64748b" />
-                <b>ДВИГАТЕЛЬ</b>
-                <small style={{ fontSize: '10px', color: '#64748b', display: 'block', marginTop: '-2px', marginBottom: '5px' }}>Двигател</small>
+                <b>{ui.specs.engine}</b>
                 <span>{truck.engine}</span>
               </div>
             )}
             {truck.power && truck.power !== "x" && (
               <div className="spec-card">
                 <Zap size={20} color="#64748b" />
-                <b>МОЩНОСТЬ</b>
-                <small style={{ fontSize: '10px', color: '#64748b', display: 'block', marginTop: '-2px', marginBottom: '5px' }}>Қуввати</small>
+                <b>{ui.specs.power}</b>
                 <span>{truck.power}</span>
               </div>
             )}
             {truck.fuel && truck.fuel !== "x" && (
               <div className="spec-card">
                 <Fuel size={20} color="#64748b" />
-                <b>ТОПЛИВО</b>
-                <small style={{ fontSize: '10px', color: '#64748b', display: 'block', marginTop: '-2px', marginBottom: '5px' }}>Ёқилғи</small>
+                <b>{ui.specs.fuel}</b>
                 <span>{truck.fuel}</span>
               </div>
             )}
-            {truck.tank && (truck.tank !== "x" || truck.category === "7") && (
+            {truck.tank && truck.tank !== "x" && (
               <div className="spec-card">
                 <Gauge size={20} color="#64748b" />
-                <b>ОБЪЕМ БАКА</b>
-                <small style={{ fontSize: '10px', color: '#64748b', display: 'block', marginTop: '-2px', marginBottom: '5px' }}>Бак ҳажми</small>
+                <b>{ui.specs.tank}</b>
                 <span>{truck.tank}</span>
               </div>
             )}
-            {truck.Снаряженная_масса_тн && truck.Снаряженная_масса_тн !== "" && (
+            {truck.Снаряженная_масса_тн && (
               <div className="spec-card">
                 <Scale size={20} color="#64748b" />
-                <b>МАССА</b>
-                <small style={{ fontSize: '10px', color: '#64748b', display: 'block', marginTop: '-2px', marginBottom: '5px' }}>Вазни</small>
-                <span>{truck.Снаряженная_масса_тн} тн</span>
+                <b>{ui.specs.weight}</b>
+                <span>{truck.Снаряженная_масса_тн} tн</span>
               </div>
             )}
             <div className="spec-card">
               <Box size={20} color="#64748b" />
-              <b>ФОРМУЛА</b>
-              <small style={{ fontSize: '10px', color: '#64748b', display: 'block', marginTop: '-2px', marginBottom: '5px' }}>Формула</small>
+              <b>{ui.specs.formula}</b>
               <span>{truck.formula}</span>
             </div>
             {truck.load && truck.load !== "x" && (
               <div className="spec-card">
                 <Weight size={20} color="#64748b" />
-                <b>ГРУЗОПОДЪЕМНОСТЬ</b>
-                <small style={{ fontSize: '10px', color: '#64748b', display: 'block', marginTop: '-2px', marginBottom: '5px' }}>Юк кўтариши</small>
+                <b>{ui.specs.load}</b>
                 <span>{truck.load} тн</span>
               </div>
             )}
@@ -365,48 +357,79 @@ const TruckDetails = () => {
 
           {truck.Komplektatsiya && truck.Komplektatsiya !== "x" && (
             <div className="package-info-box">
-              <h4>Комплектация</h4>
-              <p>{truck.Komplektatsiya}</p>
+              <h4>Komplektatsiya</h4>
+              <p>{getLangVal(truck.Komplektatsiya)}</p>
             </div>
           )}
 
           <div className="extra-info-wrapper">
             <div className="info-section-item service-bg">
-              <strong><MapPin size={20} color="#3b82f6" /> Сервис ва эҳтиёт қисмlar</strong>
-              <p><b>Сервис:</b> {truck.Rasmiy_servis_mavjudligi}</p>
-              <p><b>Ehtiyot qismlar:</b> {truck.Ehtiyot_qismlar_mavjudligi}</p>
+              <strong><MapPin size={20} color="#3b82f6" /> {ui.sections.service}</strong>
+              <p><b>Servis:</b> {getLangVal(truck.Rasmiy_servis_mavjudligi)}</p>
+              <p><b>Ehtiyot qismlar:</b> {getLangVal(truck.Ehtiyot_qismlar_mavjudligi)}</p>
             </div>
-            {truck.Soha_va_vazifasi && (<div className="info-section-item usage-bg"><strong><Info size={20} color="#1e40af" /> Соҳа ва вазифаси</strong><p>{truck.Soha_va_vazifasi}</p></div>)}
-            {truck.Moliyalashtirish && (<div className="info-section-item finance-bg"><strong><CreditCard size={20} color="#166534" /> Молиялаштириш</strong><p>{truck.Moliyalashtirish}</p></div>)}
-            {truck.Ekspluatatsiya_xususiyatlari && (<div className="info-section-item properties-bg"><strong><Activity size={20} color="#6366f1" /> Эксплуатация хусусиятlari</strong><p>{truck.Ekspluatatsiya_xususiyatlari}</p></div>)}
-            {truck.Yillik_saqlash_xarajatlari && (<div className="info-section-item cost-bg"><strong><TrendingDown size={20} color="#ea580c" /> Йиллик сақлаш харажатlari</strong><p>{truck.Yillik_saqlash_xarajatlari}</p></div>)}
-            {truck.Kuchsiz_tomonlari && (<div className="info-section-item weak-bg"><strong><AlertTriangle size={20} color="#e11d48" /> Кучсиз томонлари</strong><p>{truck.Kuchsiz_tomonlari}</p></div>)}
-            {truck.Takliflar && (<div className="info-section-item offers-bg"><strong><FileText size={20} color="#854d0e" /> Таклифлар</strong><p>{truck.Takliflar}</p>{truck.img2 && <img src={truck.img2} alt="offer" className="offer-img" />}</div>)}
+
+            {truck.Soha_va_vazifasi && truck.Soha_va_vazifasi !== "x" && (
+              <div className="info-section-item usage-bg">
+                <strong><Info size={20} color="#1e40af" /> {ui.sections.usage}</strong>
+                <p>{getLangVal(truck.Soha_va_vazifasi)}</p>
+              </div>
+            )}
+
+            {truck.Moliyalashtirish && truck.Moliyalashtirish !== "x" && (
+              <div className="info-section-item finance-bg">
+                <strong><CreditCard size={20} color="#166534" /> {ui.sections.finance}</strong>
+                <p>{getLangVal(truck.Moliyalashtirish)}</p>
+              </div>
+            )}
+
+            {truck.Ekspluatatsiya_xususiyatlari && truck.Ekspluatatsiya_xususiyatlari !== "x" && (
+              <div className="info-section-item properties-bg">
+                <strong><Activity size={20} color="#6366f1" /> {ui.sections.features}</strong>
+                <p>{getLangVal(truck.Ekspluatatsiya_xususiyatlari)}</p>
+              </div>
+            )}
+
+            {truck.Yillik_saqlash_xarajatlari && truck.Yillik_saqlash_xarajatlari !== "x" && (
+              <div className="info-section-item cost-bg">
+                <strong><TrendingDown size={20} color="#ea580c" /> {ui.sections.costs}</strong>
+                <p>{getLangVal(truck.Yillik_saqlash_xarajatlari)}</p>
+              </div>
+            )}
+
+            {truck.Kuchsiz_tomonlari && truck.Kuchsiz_tomonlari !== "x" && (
+              <div className="info-section-item weak-bg">
+                <strong><AlertTriangle size={20} color="#e11d48" /> {ui.sections.weak}</strong>
+                <p>{getLangVal(truck.Kuchsiz_tomonlari)}</p>
+              </div>
+            )}
+
+            {truck.Takliflar && truck.Takliflar !== "x" && (
+              <div className="info-section-item offers-bg">
+                <strong><FileText size={20} color="#854d0e" /> {ui.sections.offers}</strong>
+                <p>{getLangVal(truck.Takliflar)}</p>
+                {truck.img2 && <img src={truck.img2} alt="offer" className="offer-img" />}
+              </div>
+            )}
 
             {truck.competitors && truck.competitors.length > 0 && (
               <div className="competitors-section">
                 <div className="section-title-flex">
                   <ArrowRightLeft size={28} color="#f59e0b" />
-                  <h2>Рақобатчилар ва солиштириш</h2>
+                  <h2>{ui.sections.competitors}</h2>
                 </div>
                 <div className="competitors-grid">
-                  {truck.competitors.map((comp, index) => (
-                    <div className="competitor-card" key={index}>
+                  {truck.competitors.map((comp, idx) => (
+                    <div className="competitor-card" key={idx}>
                       <div className="comp-img-container">
-                        {comp.imgk ? <img src={comp.imgk} alt={comp.name} /> : <span>Расм йўқ</span>}
+                        {comp.imgk ? <img src={comp.imgk} alt={comp.name} /> : <span>{ui.noImage}</span>}
                       </div>
                       <div className="comp-body">
                         <h3 className="comp-name">{comp.name}</h3>
                         <div className="comp-price-tag">{comp.price}</div>
-                        <div className="comp-specs-row">
-                          <div className="mini-badge"><b>Формула:</b> {comp.formula}</div>
-                          {comp.power && comp.power !== "x" && <div className="mini-badge"><b>Кучи:</b> {comp.power}</div>}
-                          {comp.load && comp.load !== "x" && <div className="mini-badge"><b>Юк:</b> {comp.load} тн</div>}
-                        </div>
-                        <div className="comp-detailed-info" style={{ marginTop: '10px', fontSize: '13px', color: '#475569', borderTop: '1px solid #f1f5f9', paddingTop: '10px' }}>
-                          {comp.Komplektatsiya && comp.Komplektatsiya !== "x" && <div className="comp-info-line"><strong>Комплектация:</strong> {comp.Komplektatsiya}</div>}
-                          {comp.Rasmiy_servis_mavjudligi && comp.Rasmiy_servis_mavjudligi !== "x" && <div className="comp-info-line"><strong>Сервис:</strong> {comp.Rasmiy_servis_mavjudligi}</div>}
-                          {comp.Moliyalashtirish && comp.Moliyalashtirish !== "x" && <div className="comp-info-line"><strong>Молия:</strong> {comp.Moliyalashtirish}</div>}
+                        <div className="comp-detailed-info">
+                          <div className="comp-info-line"><strong>Komplektatsiya:</strong> {getLangVal(comp.Komplektatsiya)}</div>
+                          <div className="comp-info-line"><strong>Servis:</strong> {getLangVal(comp.Rasmiy_servis_mavjudligi)}</div>
                         </div>
                       </div>
                     </div>
@@ -421,13 +444,22 @@ const TruckDetails = () => {
   );
 };
 
+// --- ASOSIY APP ---
 export default function App() {
+  // Til holatini localStorage'da saqlaymiz
+  const [lang, setLang] = useState(localStorage.getItem('appLang') || 'uz');
+
+  const handleSetLang = (newLang) => {
+    setLang(newLang);
+    localStorage.setItem('appLang', newLang);
+  };
+
   return (
     <BrowserRouter>
       <ScrollToTop />
       <Routes>
-        <Route path="/" element={<CatalogPage />} />
-        <Route path="/truck/:id" element={<TruckDetails />} />
+        <Route path="/" element={<CatalogPage lang={lang} setLang={handleSetLang} />} />
+        <Route path="/truck/:id" element={<TruckDetails lang={lang} setLang={handleSetLang} />} />
       </Routes>
     </BrowserRouter>
   );
