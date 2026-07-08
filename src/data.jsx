@@ -1211,7 +1211,7 @@ export const TRUCKS_DATA = [
         Снаряженная_масса_тн: "8,3",
     },
     {
-        id: "44", category: "I", name: "Полуприцеп тентовый 92м3", price: "456 000 000 сум", formula: "3-осная", load: "31,1", img: "/images/43.png",
+        id: "44", category: "I", name: "Полуприцеп тентовый 92м3", price: "456 960 000 сум", formula: "3-осная", load: "31,1", img: "/images/43.png",
         Komplektatsiya: { uz: "x", ru: "x" },
         Rasmiy_servis_mavjudligi: { uz: "8 ta sertifikatlangan servis markazi, mobil servis tashkil qilish imkoniyati", ru: "8 сертифицированных сервисных центров" },
         Ehtiyot_qismlar_mavjudligi: { uz: "Samarqand shahridagi ehtiyot qismlar ombori", ru: "Склад запчастей в Самарканде" },
