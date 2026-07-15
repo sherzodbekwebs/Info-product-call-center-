@@ -1,6 +1,7 @@
 export const TRUCKS_DATA = [
     {
         id: "1",
+        pdfUrl: "/pdfs/тягач4x2.pdf",
         category: "I",
         name: "Седельный тягач КАМАЗ 54901-7004-СА 4х2",
         price: "932 848 000 сум",
@@ -88,6 +89,7 @@ export const TRUCKS_DATA = [
     },
     {
         id: "2",
+        pdfUrl: "/pdfs/тягач6x6.pdf",
         category: "I",
         name: "Седельный тягач 44108-6010-24 6x6",
         price: "775 040 000 сум",
@@ -148,6 +150,7 @@ export const TRUCKS_DATA = [
     },
     {
         id: "3",
+        
         category: "I",
         name: "Седельный тягач 44108-6010-24 КМУ 10 тн длина 9,57 метр 6x6",
         price: "1 329 440 000 сум",
@@ -195,6 +198,7 @@ export const TRUCKS_DATA = [
     },
     {
         id: "4",
+        pdfUrl: "/pdfs/тягач6x4.pdf",
         category: "I",
         name: "Седельный тягач 6460-001-63 6х4 400 л.с.",
         price: "882 560 000 сум",

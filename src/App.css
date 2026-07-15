@@ -755,3 +755,67 @@ body {
 .c-header-gray th {
     color: #ffffff !important;
 }
+
+
+/* Tugmalar konteyneri */
+.product-actions-wrapper {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+/* Umumiy tugma stili */
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    color: white;
+    min-width: 180px;
+}
+
+/* Lizing tugmasi (Yashil) */
+.btn-leasing {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.btn-leasing:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
+}
+
+/* PDF tugmasi (Ko'k) */
+.btn-pdf {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.btn-pdf:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+}
+
+/* Tugma bosilgandagi effekt */
+.action-btn:active {
+    transform: translateY(0);
+}
+
+/* Mobil qurilmalar uchun tugmalarni to'liq eniga qilish */
+@media (max-width: 600px) {
+    .product-actions-wrapper {
+        flex-direction: column;
+    }
+    .action-btn {
+        width: 100%;
+    }
+}

@@ -8,10 +8,18 @@ import {
 } from 'lucide-react';
 import './App.css';
 import { TRUCKS_DATA } from './data.jsx';
+import PdfViewer from './PdfViewer'; // Fayl yo'lini tekshiring
+import { Eye } from 'lucide-react'; // Ko'z ikonkasi uchun
 
 // --- TILLAR UCHUN LUG'AT (UI elementlari uchun) ---
 const UI_TEXT = {
   uz: {
+    pdf: {
+      btn: "Texnik tavsif (PDF)",
+      title: "Texnik tavsifnomani ko'rish",
+      download: "Yuklab olish",
+      noFile: "Fayl topilmadi"
+    },
     back: "Katalogga qaytish",
     searchPlaceholder: "Texnika nomi yoki formula...",
     allFormulas: "Barcha formulalar",
@@ -48,6 +56,12 @@ const UI_TEXT = {
     }
   },
   ru: {
+    pdf: {
+      btn: "Тех. описание (PDF)",
+      title: "Просмотр тех. описания",
+      download: "Скачать файл",
+      noFile: "Файл не найден"
+    },
     back: "Вернуться в каталог",
     searchPlaceholder: "Название техники или формула...",
     allFormulas: "Все формулы",
@@ -477,6 +491,11 @@ const TruckDetails = ({ lang, setLang }) => {
   const ui = UI_TEXT[lang];
 
   const [isCalcOpen, setIsCalcOpen] = useState(false);
+  const [isPdfOpen, setIsPdfOpen] = useState(false);
+
+
+  console.log("Hozirgi texnika PDF manzili:", truck.pdfUrl);
+
 
   if (!truck) return <div className="app-container">{ui.notfound}</div>;
 
@@ -497,12 +516,25 @@ const TruckDetails = ({ lang, setLang }) => {
           <div className="details-header-flex">
             <img src={truck.img} alt={truck.name} className="main-details-img" />
             <div className="main-title-box">
-              <h1>{truck.name}</h1>
-              <div className="details-price" style={{ marginBottom: '15px' }}>{truck.price}</div>
-              {/* KALKULYATOR TUGMASI - CSS ga to'g'ri bog'landi */}
-              <button onClick={() => setIsCalcOpen(true)} className="calc-open-btn-trigger">
-                <Calculator size={18} /> {ui.calc.btn}
-              </button>
+              <h1 style={{ fontSize: '28px', color: '#1e293b', marginBottom: '10px' }}>{truck.name}</h1>
+              <div className="details-price" style={{ marginBottom: '20px', fontSize: '32px' }}>{truck.price}</div>
+
+              {/* TUGMALAR BLOKI */}
+              <div className="product-actions-wrapper">
+                {/* LIZING TUGMASI */}
+                <button onClick={() => setIsCalcOpen(true)} className="action-btn btn-leasing">
+                  <Calculator size={20} />
+                  {ui.calc.btn}
+                </button>
+
+                {/* PDF TUGMASI */}
+                {truck.pdfUrl && (
+                  <button onClick={() => setIsPdfOpen(true)} className="action-btn btn-pdf">
+                    <Eye size={20} />
+                    {ui.pdf.btn}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 
@@ -644,6 +676,15 @@ const TruckDetails = ({ lang, setLang }) => {
 
       {/* KALKULYATOR MODALI */}
       <LeasingCalculatorModal isOpen={isCalcOpen} onClose={() => setIsCalcOpen(false)} truck={truck} lang={lang} />
+
+      <PdfViewer
+        isOpen={isPdfOpen}
+        onClose={() => setIsPdfOpen(false)}
+        pdfUrl={truck.pdfUrl}
+        title={truck.name}
+        lang={lang}
+        uiText={UI_TEXT}
+      />
     </div>
   );
 };
