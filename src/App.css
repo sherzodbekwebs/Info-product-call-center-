@@ -70,7 +70,7 @@ body {
     background: #fff;
     border-radius: 12px;
     border: 1px solid #e2e8f0;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     z-index: 1100;
     max-height: 250px;
     overflow-y: auto;
@@ -91,7 +91,10 @@ body {
     margin-bottom: 15px;
     scrollbar-width: none;
 }
-.formula-chips::-webkit-scrollbar { display: none; }
+
+.formula-chips::-webkit-scrollbar {
+    display: none;
+}
 
 .chip {
     padding: 6px 14px;
@@ -144,11 +147,26 @@ body {
     transition: 0.3s;
 }
 
-.btn-uz { font-size: 14px; font-weight: 700; color: #1e293b; }
-.btn-ru { font-size: 11px; color: #64748b; }
+.btn-uz {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1e293b;
+}
 
-.filter-btn.active { background: #3b82f6; border-color: #3b82f6; }
-.filter-btn.active .btn-uz, .filter-btn.active .btn-ru { color: #fff; }
+.btn-ru {
+    font-size: 11px;
+    color: #64748b;
+}
+
+.filter-btn.active {
+    background: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.filter-btn.active .btn-uz,
+.filter-btn.active .btn-ru {
+    color: #fff;
+}
 
 /* --- CATALOG GRID (ASL) --- */
 .truck-grid {
@@ -180,12 +198,44 @@ body {
     padding: 10px;
 }
 
-.card-image-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
-.card-info-box { padding: 15px; }
-.truck-title { font-size: 14px; font-weight: 700; height: 36px; overflow: hidden; margin-bottom: 8px; }
-.truck-price { color: #3b82f6; font-weight: 800; font-size: 16px; margin-bottom: 10px; }
-.truck-meta { display: flex; gap: 8px; }
-.truck-meta span { font-size: 10px; background: #f1f5f9; padding: 3px 7px; border-radius: 5px; color: #64748b; font-weight: 600; }
+.card-image-box img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.card-info-box {
+    padding: 15px;
+}
+
+.truck-title {
+    font-size: 14px;
+    font-weight: 700;
+    height: 36px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.truck-price {
+    color: #3b82f6;
+    font-weight: 800;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.truck-meta {
+    display: flex;
+    gap: 8px;
+}
+
+.truck-meta span {
+    font-size: 10px;
+    background: #f1f5f9;
+    padding: 3px 7px;
+    border-radius: 5px;
+    color: #64748b;
+    font-weight: 600;
+}
 
 /* --- DETAILS PAGE (ASL - O'ZGARMADI) --- */
 .app-containerr {
@@ -232,7 +282,9 @@ body {
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
-.details-content { padding: 40px; }
+.details-content {
+    padding: 40px;
+}
 
 .details-header-flex {
     display: flex;
@@ -242,8 +294,16 @@ body {
     flex-wrap: wrap;
 }
 
-.main-details-img { width: 280px; object-fit: contain; }
-.details-price { font-size: 32px; font-weight: 800; color: #3b82f6; }
+.main-details-img {
+    width: 280px;
+    object-fit: contain;
+}
+
+.details-price {
+    font-size: 32px;
+    font-weight: 800;
+    color: #3b82f6;
+}
 
 .spec-grid {
     display: grid;
@@ -262,19 +322,67 @@ body {
     gap: 5px;
 }
 
-.spec-card b { font-size: 11px; color: #64748b; text-transform: uppercase; }
-.spec-card span { font-size: 15px; font-weight: 700; color: #1e293b; }
+.spec-card b {
+    font-size: 11px;
+    color: #64748b;
+    text-transform: uppercase;
+}
 
-.info-section-item { padding: 25px; border-radius: 20px; margin-bottom: 20px; line-height: 1.6; }
-.info-section-item strong { display: flex; align-items: center; gap: 10px; font-size: 18px; margin-bottom: 12px; }
+.spec-card span {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+}
 
-.service-bg { background: #f8fafc; border: 1px solid #e2e8f0; }
-.usage-bg { background: #f0f9ff; border: 1px solid #bae6fd; }
-.finance-bg { background: #f0fdf4; border: 1px solid #bbf7d0; }
-.properties-bg { background: #faf5ff; border: 1px solid #e9d5ff; }
-.cost-bg { background: #fff7ed; border: 1px solid #ffedd5; }
-.weak-bg { background: #fff1f2; border: 1px solid #fecdd3; }
-.offers-bg { background: #fefce8; border: 1px solid #fef08a; }
+.info-section-item {
+    padding: 25px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.info-section-item strong {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+
+.service-bg {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+
+.usage-bg {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+}
+
+.finance-bg {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+}
+
+.properties-bg {
+    background: #faf5ff;
+    border: 1px solid #e9d5ff;
+}
+
+.cost-bg {
+    background: #fff7ed;
+    border: 1px solid #ffedd5;
+}
+
+.weak-bg {
+    background: #fff1f2;
+    border: 1px solid #fecdd3;
+}
+
+.offers-bg {
+    background: #fefce8;
+    border: 1px solid #fef08a;
+}
 
 .package-info-box {
     background: #f1f5f9;
@@ -285,29 +393,365 @@ body {
 }
 
 /* --- COMPETITORS --- */
-.competitors-section { margin-top: 50px; padding-top: 30px; border-top: 2px solid #e2e8f0; }
-.competitors-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; }
-.competitor-card { background: #fff; border-radius: 20px; border: 1px solid #e2e8f0; overflow: hidden; }
-.comp-img-container { height: 180px; background: #f8fafc; display: flex; align-items: center; justify-content: center; padding: 20px; }
-.comp-img-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
-.comp-body { padding: 20px; }
-.comp-name { font-size: 18px; font-weight: 800; margin: 0; }
-.comp-price-tag { font-size: 17px; color: #e11d48; font-weight: 700; margin-bottom: 15px; }
-.comp-info-line { font-size: 13px; padding: 8px; background: #f8fafc; border-radius: 8px; margin-top: 5px; }
+.competitors-section {
+    margin-top: 50px;
+    padding-top: 30px;
+    border-top: 2px solid #e2e8f0;
+}
+
+.competitors-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+}
+
+.competitor-card {
+    background: #fff;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+}
+
+.comp-img-container {
+    height: 180px;
+    background: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.comp-img-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.comp-body {
+    padding: 20px;
+}
+
+.comp-name {
+    font-size: 18px;
+    font-weight: 800;
+    margin: 0;
+}
+
+.comp-price-tag {
+    font-size: 17px;
+    color: #e11d48;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.comp-info-line {
+    font-size: 13px;
+    padding: 8px;
+    background: #f8fafc;
+    border-radius: 8px;
+    margin-top: 5px;
+}
 
 /* --- RESPONSIVE --- */
-@media (max-width: 1400px) { .truck-grid { grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 1400px) {
+    .truck-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
 
 @media (max-width: 900px) {
-    .truck-grid { grid-template-columns: repeat(2, 1fr); }
-    .competitors-grid { grid-template-columns: 1fr; }
-    .details-header-flex { justify-content: center; text-align: center; }
+    .truck-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .competitors-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .details-header-flex {
+        justify-content: center;
+        text-align: center;
+    }
 }
 
 @media (max-width: 600px) {
-    .truck-grid { grid-template-columns: 1fr; }
-    .filter-btn { min-width: 120px; }
-    .details-page { margin: 10px; }
-    .details-content { padding: 20px; }
-    .spec-grid { grid-template-columns: 1fr 1fr; }
+    .truck-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-btn {
+        min-width: 120px;
+    }
+
+    .details-page {
+        margin: 10px;
+    }
+
+    .details-content {
+        padding: 20px;
+    }
+
+    .spec-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* =========================================================
+   YANGI QO'SHILGAN KALKULYATOR STILLARI (TEGMA!)
+   ========================================================= */
+
+.calc-open-btn-trigger {
+    background: #16a34a;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: 0.3s;
+    margin-top: 5px;
+}
+
+.calc-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 99999;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.calc-modal-content {
+    background: white;
+    width: 100%;
+    max-width: 950px;
+    border-radius: 12px;
+    padding: 30px;
+    height: fit-content;
+    position: relative;
+    color: black;
+}
+
+.calc-close-x {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    border: none;
+    background: #f1f5f9;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.calc-inputs-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+    background: #f1f5f9;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.calc-inputs-grid div {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 120px;
+}
+
+.calc-inputs-grid label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    margin-bottom: 4px;
+}
+
+.calc-inputs-grid input {
+    padding: 6px;
+    border: 1px solid #cbd5e1;
+    border-radius: 5px;
+}
+
+.calc-pdf-area {
+    background: white;
+    padding: 10px;
+    color: black;
+}
+
+.calc-pdf-title {
+    margin: 0;
+    text-transform: uppercase;
+    font-size: 26px;
+    /* Avval 20px edi */
+    font-weight: 900;
+}
+
+
+.calc-pdf-sub {
+    font-size: 13px;
+    /* Avval 11px edi */
+    margin-top: 8px;
+}
+
+.calc-summary-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.calc-summary-table td {
+    border: 1px solid #000;
+    padding: 10px 12px;
+    font-size: 14px;
+}
+
+.c-label,
+.c-value-orange {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.c-label {
+    background: #808080;
+    color: white;
+    font-weight: bold;
+    width: 45%;
+}
+
+.c-value-orange {
+    background: #f58220;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+}
+
+.calc-orange-banner {
+    background-color: #f58220 !important;
+    color: white !important;
+    text-align: center;
+    padding: 12px;
+    /* Avval 8px edi */
+    font-weight: bold;
+    margin: 20px 0;
+    font-size: 16px;
+    /* Avval 12px edi */
+    text-transform: uppercase;
+}
+
+.calc-summary-table tr:first-child td {
+    font-size: 16px;
+    /* Jami summa qatori biroz kattaroq bo'lsin */
+}
+
+.calc-main-table {
+    width: 100% !important;
+    table-layout: fixed !important;
+    /* Bu juda muhim! */
+    border-collapse: collapse;
+}
+
+.calc-main-table th,
+.calc-main-table td {
+    border: 1px solid #000;
+    padding: 4px;
+    text-align: right;
+    color: black;
+}
+
+.c-header-gray {
+    background: #808080;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+}
+
+.c-year-cell {
+    background-color: #ffffff;
+    vertical-align: middle;
+    text-align: center;
+    width: 35px;
+    /* PDF kutubxonasi uchun chiziqlar aniq ko'rinishi */
+    border-left: 1px solid #000 !important;
+    border-right: 1px solid #000 !important;
+}
+
+.year-text-wrapper {
+    display: block;
+    /* Matnni aylantirish */
+    transform: rotate(-90deg);
+    white-space: nowrap;
+    /* font-weight: bold; */
+    font-size: 16px;
+    color: #000;
+
+    /* Matnni markazga keltirish uchun qo'shimcha choralar */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    /* Matn aylanayotgani uchun kenglik berish kerak */
+    margin-top: -5px;
+    /* Balandlikning yarmi */
+    margin-left: -50px;
+    /* Kenglikning yarmi */
+}
+
+.calc-pdf-btn {
+    width: 100%;
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* PDF yaratishda jadval qatorlari o'rtasidan kesilmasligi uchun */
+.calc-main-table tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+}
+
+/* Tepadagi summary jadvallari ham bo'linib ketmasligi uchun */
+.calc-summary-table {
+    page-break-inside: avoid !important;
+}
+
+/* JAMI qatori hamisha o'zidan oldingi qator bilan qolishi uchun */
+.calc-main-table tr:last-child {
+    page-break-after: auto;
+}
+
+.c-header-gray th {
+    color: #ffffff !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+/* Jadvalning eng oxirgi qatori (Jami) uchun */
+.calc-main-table tr:last-child td {
+    color: #ffffff !important;
+}
+
+/* Sarlavha (Header) uchun ham (agar hali qo'shmagan bo'lsangiz) */
+.c-header-gray th {
+    color: #ffffff !important;
 }

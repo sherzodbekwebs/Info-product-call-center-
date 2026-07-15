@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { BrowserRouter, Routes, Route, Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import {
   ArrowLeft, Settings, Zap, Fuel, Gauge, Box, Weight,
   MapPin, CreditCard, Activity, TrendingDown, AlertTriangle, FileText,
-  Scale, ArrowRightLeft, Info, Filter, Search, Check, Globe
+  Scale, ArrowRightLeft, Info, Filter, Search, Check, Globe,
+  Calculator, X, Download
 } from 'lucide-react';
 import './App.css';
 import { TRUCKS_DATA } from './data.jsx';
@@ -15,54 +16,72 @@ const UI_TEXT = {
     searchPlaceholder: "Texnika nomi yoki formula...",
     allFormulas: "Barcha formulalar",
     filterTitle: "Saralash:",
-    specs: {
-      engine: "DVIGATEL",
-      power: "QUVVATI",
-      fuel: "YOQILG'I",
-      tank: "BAK HAJMI",
-      weight: "VAZNI",
-      formula: "FORMULA",
-      load: "YUK KO'TARISHI"
-    },
-    sections: {
-      service: "Servis va ehtiyot qismlar",
-      usage: "Soha va vazifasi",
-      finance: "Moliyalashtirish",
-      features: "Ekspluatatsiya xususiyatlari",
-      costs: "Yillik saqlash xarajatlari",
-      weak: "Kuchsiz tomonlari",
-      offers: "Takliflar",
-      competitors: "Raqobatchilar va solishtirish"
-    },
+    specs: { engine: "DVIGATEL", power: "QUVVATI", fuel: "YOQILG'I", tank: "BAK HAJMI", weight: "VAZNI", formula: "FORMULA", load: "YUK KO'TARISHI" },
+    sections: { service: "Servis va ehtiyot qismlar", usage: "Soha va vazifasi", finance: "Moliyalashtirish", features: "Ekspluatatsiya xususiyatlari", costs: "Yillik saqlash xarajatlari", weak: "Kuchsiz tomonlari", offers: "Takliflar", competitors: "Raqobatchilar va solishtirish" },
     noImage: "Rasm yo'q",
-    notfound: "Texnika topilmadi!"
+    notfound: "Texnika topilmadi!",
+    calc: {
+      btn: "Lizing hisoblash",
+      title: "LIZING KALKULYATORI",
+      subtitle: "Bitim bo'yicha xarajatlarning dastlabki hisob-kitobi (yakuniy grafik shartnoma tuzishda aniqlanadi)",
+      objName: "Lizing ob'ekti nomi",
+      price: "Lizing ob'ekti summasi, QQS bilan (so'm)",
+      term: "Lizing muddati (oy)",
+      prepay: "Avans to'lovi",
+      rate: "Lizing foiz stavkasi %",
+      ins: "Sug'urta TC (%) yillik",
+      banner: "ANNUITET HISOB-KITOBI",
+      summaryTotal: "Bitim bo'yicha JAMI to'lovlar *)",
+      summary1: "1. Lizing ob'ekti qiymati",
+      summary2: "2. Lizing to'lovlari (foizlar)",
+      summary3: "3. Sug'urta",
+      summary4: "4. Ko'rib chiqish komissiyasi",
+      summary5: "5. Sun'iy yo'ldosh monitoringi (GPS)",
+      tableMonth: "Oylar",
+      tableYear: "Yil",
+      tableRem: "Asosiy qarz qoldig'i",
+      tablePrincipal: "Asosiy qarz",
+      tableInt: "Lizing kompaniyasi xizmatlari",
+      tableTotal: "Oylik to'lov",
+      download: "PDF YUKLAB OLISH",
+      inPrice: "to'lov tarkibida"
+    }
   },
   ru: {
     back: "Вернуться в каталог",
     searchPlaceholder: "Название техники или формула...",
     allFormulas: "Все формулы",
     filterTitle: "Сортировка:",
-    specs: {
-      engine: "ДВИГАТЕЛЬ",
-      power: "МОЩНОСТЬ",
-      fuel: "ТОПЛИВО",
-      tank: "ОБЪЕМ БАКА",
-      weight: "МАССА",
-      formula: "ФОРМУЛА",
-      load: "ГРУЗОПОДЪЕМНОСТЬ"
-    },
-    sections: {
-      service: "Сервис и запчасти",
-      usage: "Сфера и задачи",
-      finance: "Финансирование",
-      features: "Особенности эксплуатации",
-      costs: "Ежегодные расходы",
-      weak: "Слабые стороны",
-      offers: "Предложения",
-      competitors: "Конкуренты и сравнение"
-    },
+    specs: { engine: "ДВИГАТЕЛЬ", power: "МОЩНОСТЬ", fuel: "ТОПЛИВО", tank: "ОБЪЕМ БАКА", weight: "МАССА", formula: "ФОРМУЛА", load: "ГРУЗОПОДЪЕМНОСТЬ" },
+    sections: { service: "Сервис и запчасти", usage: "Сфера и задачи", finance: "Финансирование", features: "Особенности эксплуатации", costs: "Ежегодные расходы", weak: "Слабые стороны", offers: "Предложения", competitors: "Конкуренты и сравнение" },
     noImage: "Нет фото",
-    notfound: "Техника не найдена!"
+    notfound: "Техника не найдена!",
+    calc: {
+      btn: "Рассчитать лизинг",
+      title: "ЛИЗИНГОВЫЙ КАЛЬКУЛЯТОР",
+      subtitle: "предварительный расчет расходов по лизинговой сделке (окончательный расчет будет при заключении договора)",
+      objName: "Наименование объекта лизинга",
+      price: "Сумма объекта лизинга, с НДС (сум)",
+      term: "Срок лизинга (мес.)",
+      prepay: "Авансовый платеж",
+      rate: "Процентная ставка лизинга %",
+      ins: "Страхование ТС (%) годовых",
+      banner: "РАВНОМЕРНЫЙ РАСЧЕТ",
+      summaryTotal: "ИТОГО платежи по сделке *)",
+      summary1: "1. Стоимость объекта лизинга",
+      summary2: "2. Лизинговые платежи",
+      summary3: "3. Страхование",
+      summary4: "4. Комиссия за рассмотрение",
+      summary5: "5. Спутниковый мониторинг (GPS)",
+      tableMonth: "Месяцы",
+      tableYear: "Год",
+      tableRem: "Остаток основного долга",
+      tablePrincipal: "Основной долг",
+      tableInt: "Услуги лизинговой компании",
+      tableTotal: "Ежемесячный платеж",
+      download: "СКАЧАТЬ В PDF",
+      inPrice: "в стоимости платежа"
+    }
   }
 };
 
@@ -101,7 +120,7 @@ const cyrillicToLatin = (str) => {
     'ш': 'sh', 'ч': 'ch', 'ю': 'yu', 'я': 'ya', 'ё': 'yo', 'ц': 'ts',
     'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ж': 'j',
     'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n',
-    'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f',
+    'о': 'o', 'п': 'p', 'r': 'r', 'с': 's', 'т': 't', 'u': 'у', 'ф': 'f',
     'х': 'x', 'қ': 'q', 'ғ': "g'", 'ў': "o'", 'ҳ': 'h'
   };
   return str.toLowerCase().split('').map(char => mapping[char] || char).join('');
@@ -115,7 +134,7 @@ const HighlightText = ({ text, highlight }) => {
   const parts = text.split(regex);
   return (
     <span>
-      {parts.map((part, i) => 
+      {parts.map((part, i) =>
         regex.test(part) ? <b key={i} style={{ color: '#2563eb', fontWeight: '800' }}>{part}</b> : part
       )}
     </span>
@@ -125,28 +144,205 @@ const HighlightText = ({ text, highlight }) => {
 // --- TIL ALMASHTIRGICH KOMPONENTI ---
 const LanguageSwitcher = ({ lang, setLang }) => (
   <div className="lang-switcher" style={{ display: 'flex', gap: '5px', marginBottom: '15px', justifyContent: 'flex-end' }}>
-    <button 
-      onClick={() => setLang('uz')} 
+    <button
+      onClick={() => setLang('uz')}
       className={`lang-btn ${lang === 'uz' ? 'active' : ''}`}
-      style={{ padding: '5px 10px', borderRadius: '8px', cursor: 'pointer', border: '1px solid #e2e8f0', background: lang === 'uz' ? '#2563eb' : 'white', color: lang === 'uz' ? 'white' : '#64748b' }}
     >
       UZ
     </button>
-    <button 
-      onClick={() => setLang('ru')} 
+    <button
+      onClick={() => setLang('ru')}
       className={`lang-btn ${lang === 'ru' ? 'active' : ''}`}
-      style={{ padding: '5px 10px', borderRadius: '8px', cursor: 'pointer', border: '1px solid #e2e8f0', background: lang === 'ru' ? '#2563eb' : 'white', color: lang === 'ru' ? 'white' : '#64748b' }}
     >
       RU
     </button>
   </div>
 );
 
+// --- LIZING KALKULYATOR MODAL KOMPONENTI ---
+const LeasingCalculatorModal = ({ isOpen, onClose, truck, lang }) => {
+  const t = UI_TEXT[lang].calc;
+  const pdfRef = useRef(null);
+
+  const parseNum = (p) => {
+    if (!p) return 932848000; // Exceldagi default qiymat
+    const n = parseInt(p.toString().replace(/[^0-9]/g, ''));
+    return n > 0 ? n : 932848000;
+  };
+
+  const [price, setPrice] = useState(parseNum(truck.price));
+  const [term, setTerm] = useState(36);
+  const [prepayPct, setPrepayPct] = useState(25);
+  const [rate, setRate] = useState(20);
+  const [insRate, setInsRate] = useState(0.7);
+
+  if (!isOpen) return null;
+
+  const advance = Math.round(price * (prepayPct / 100));
+  const loanAmount = price - advance;
+  const monthlyRate = (rate / 100) / 12;
+
+  const monthlyPayment = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, term)) / (Math.pow(1 + monthlyRate, term) - 1);
+  const totalInterest = (monthlyPayment * term) - loanAmount;
+  const totalIns = (price * (insRate / 100)) * (term / 12);
+
+  // Excel mantiqi: ITOGO = Texnika narxi + Lizing foizlari (Sug'urta alohida ko'rsatiladi lekin summaga kiradi)
+  const totalDeal = price + totalInterest;
+
+  const schedule = [];
+  let currentBalance = loanAmount; // Jami qarz (masalan 581,280,000)
+
+  for (let i = 1; i <= term; i++) {
+    const interest = currentBalance * monthlyRate;
+    const principal = monthlyPayment - interest;
+
+    // Exceldagi kabi bo'lishi uchun qoldiqdan asosiy qarzni AYIRIB, 
+    // keyin jadvalga saqlaymiz
+    currentBalance -= principal;
+
+    schedule.push({
+      month: i,
+      year: Math.ceil(i / 12),
+      remaining: Math.max(0, currentBalance), // <--- Endi bu OY OXIRIDAGI qoldiq bo'ldi
+      principal: principal,
+      interest: interest,
+      total: monthlyPayment
+    });
+  }
+
+  const format = (n) => Math.round(n).toLocaleString('ru-RU');
+
+  const handleDownloadPDF = async () => {
+    const html2pdf = (await import('html2pdf.js')).default;
+    const opt = {
+      margin: 5,
+      filename: `Lizing_Taklifi_${truck.name}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        letterRendering: true // Harflarni chizishni yaxshilaydi
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(pdfRef.current).save();
+  };
+
+  return (
+    <div className="calc-modal-overlay">
+      <div className="calc-modal-content">
+        <button className="calc-close-x" onClick={onClose}><X /></button>
+
+        <div className="calc-inputs-grid">
+          <div><label>{t.price}</label><input value={price} onChange={e => setPrice(Number(e.target.value))} /></div>
+          <div><label>{t.term}</label><input value={term} onChange={e => setTerm(Number(e.target.value))} /></div>
+          <div><label>{t.prepay}%</label><input value={prepayPct} onChange={e => setPrepayPct(Number(e.target.value))} /></div>
+          <div><label>{t.rate}%</label><input value={rate} onChange={e => setRate(Number(e.target.value))} /></div>
+        </div>
+
+        <div ref={pdfRef} className="calc-pdf-area">
+          <center>
+            <h2 className="calc-pdf-title">{t.title}</h2>
+            <p className="calc-pdf-sub" style={{ textTransform: 'lowercase' }}>{t.subtitle}</p>
+          </center>
+
+          <table className="calc-summary-table">
+            <tbody>
+              <tr><td className="c-label">{t.objName}</td><td className="c-value-orange">{truck.name}</td></tr>
+              <tr><td className="c-label">{t.price}</td><td className="c-value-orange">{format(price)}</td></tr>
+              <tr><td className="c-label">{t.term}</td><td className="c-value-orange">{term}</td></tr>
+              <tr><td className="c-label">{t.prepay} ({prepayPct}%)</td><td className="c-value-orange">{format(advance)}</td></tr>
+              <tr><td className="c-label">{t.rate}</td><td className="c-value-orange">{rate}%</td></tr>
+              <tr><td className="c-label">{t.ins}</td><td className="c-value-orange">{insRate}%</td></tr>
+            </tbody>
+          </table>
+
+          <div className="calc-orange-banner">{t.banner}</div>
+
+          <table className="calc-summary-table" style={{ width: '60%' }}>
+            <tbody>
+              <tr style={{ fontWeight: 'bold' }}><td>{t.summaryTotal}</td><td style={{ textAlign: 'right' }}>{format(totalDeal)}</td></tr>
+              <tr><td>{t.summary1}</td><td style={{ textAlign: 'right' }}>{format(price)}</td></tr>
+              <tr><td>{t.summary2}</td><td style={{ textAlign: 'right' }}>{format(totalInterest)}</td></tr>
+              <tr><td>{t.summary3}</td><td style={{ textAlign: 'right' }}>{format(totalIns)}</td></tr>
+              <tr><td>{t.summary4}</td><td style={{ textAlign: 'right', color: '#f58220', fontWeight: 'bold' }}>0%</td></tr>
+              <tr><td>{t.summary5}</td><td style={{ textAlign: 'right', fontSize: '10px' }}><u>{t.inPrice}</u></td></tr>
+            </tbody>
+          </table>
+
+          <h3 style={{ textAlign: 'center', fontSize: '16px', margin: '20px 0 10px 0' }}>{lang === 'uz' ? "To'lovlar grafigi" : "Предварительный график платежей"}</h3>
+
+          <table className="calc-main-table" style={{ tableLayout: 'fixed', width: '100%' }}>
+            <thead>
+              <tr className="c-header-gray">
+                <th style={{ width: '45px' }}>{lang === 'uz' ? "Mec" : "Мес"}</th>
+                <th style={{ width: '45px' }}>{t.tableYear}</th>
+                <th style={{ width: '22%' }}>{t.tableRem}</th>
+                <th style={{ width: '20%' }}>{t.tablePrincipal}</th>
+                <th style={{ width: '20%' }}>{t.tableInt}</th>
+                <th style={{ width: '20%', background: '#f58220' }}>{t.tableTotal}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style={{ fontWeight: 'bold' }}>
+                <td colSpan={5} style={{ textAlign: 'left', paddingLeft: '10px' }}>{t.prepay}</td>
+                <td style={{ textAlign: 'right' }}>{format(advance)}</td>
+              </tr>
+              {schedule.map((row, idx) => (
+                <tr key={idx}>
+                  <td style={{ textAlign: 'center' }}>{row.month}</td>
+
+                  {/* BU YERDA ROWSPAN OLIB TASHLANDI - PDFda surilmaslik uchun */}
+                  <td className="c-year-cell" style={{
+                    /* Kataklar orasidagi gorizontal chiziqlarni o'chirib, bitta uzun katak ko'rinishini beramiz */
+                    borderBottom: row.month % 12 === 0 ? '1px solid #000' : 'none',
+                    borderTop: row.month % 12 === 1 ? '1px solid #000' : 'none',
+                    padding: '0',
+                    position: 'relative'
+                  }}>
+                    {/* Matnni har bir blokning 6-oyiga qo'yamiz, shunda u o'rtada turgandek ko'rinadi */}
+                    {(row.month === 6 || row.month === 18 || row.month === 30) ? (
+                      <div className="year-text-wrapper">
+                        {row.year}-{lang === 'uz' ? "yil" : "год"}
+                      </div>
+                    ) : null}
+                  </td>
+
+                  <td style={{ textAlign: 'right' }}>{format(row.remaining)}</td>
+                  <td style={{ textAlign: 'right' }}>{format(row.principal)}</td>
+                  <td style={{ textAlign: 'right' }}>{format(row.interest)}</td>
+                  <td style={{ textAlign: 'right', fontWeight: 'bold' }}>{format(row.total)}</td>
+                </tr>
+              ))}
+
+              {/* JAMI QATORI - ENDI 6 TA TD ISHLATILDI */}
+              <tr style={{ background: '#808080', color: 'white', fontWeight: 'bold', textAlign: 'right' }}>
+                <td></td>
+                <td></td>
+                <td style={{ textAlign: 'center' }}>{lang === 'uz' ? "JAMI:" : "ИТОГО:"}</td>
+                <td>{format(loanAmount)}</td>
+                <td>{format(totalInterest)}</td>
+                <td style={{ background: '#808080' }}>
+                  {format(monthlyPayment * term)}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <button onClick={handleDownloadPDF} className="calc-pdf-btn">
+          <Download size={20} /> {t.download}
+        </button>
+      </div>
+    </div>
+  );
+};
+
 // --- 1-SAHIFA: KATALOG ---
 const CatalogPage = ({ lang, setLang }) => {
   const navigate = useNavigate();
   const [activeCat, setActiveCat] = useState(sessionStorage.getItem('cat') || "All");
-  const [activeFormula, setActiveFormula] = useState(sessionStorage.getItem('formula') || "All"); 
+  const [activeFormula, setActiveFormula] = useState(sessionStorage.getItem('formula') || "All");
   const [searchTerm, setSearchTerm] = useState(sessionStorage.getItem('search') || "");
   const [showSuggestions, setShowSuggestions] = useState(false);
 
@@ -175,7 +371,7 @@ const CatalogPage = ({ lang, setLang }) => {
     const idNum = parseInt(truck.id);
     const tNameCyr = (truck.name || "").toLowerCase();
     const tNameLat = cyrillicToLatin(tNameCyr);
-    
+
     let matchesCategory = false;
     if (activeCat === "All") matchesCategory = true;
     else if (activeCat === "Tyagach") matchesCategory = idNum >= 1 && idNum <= 4;
@@ -187,18 +383,18 @@ const CatalogPage = ({ lang, setLang }) => {
     else if (activeCat === "Shassi") matchesCategory = idNum >= 55 && idNum <= 58;
 
     const matchesFormula = activeFormula === "All" || truck.formula === activeFormula;
-    const matchesSearch = tNameCyr.includes(searchTerm.toLowerCase()) || 
-                          tNameCyr.includes(cyrillicSearch) || 
-                          tNameLat.includes(searchTerm.toLowerCase());
+    const matchesSearch = tNameCyr.includes(searchTerm.toLowerCase()) ||
+      tNameCyr.includes(cyrillicSearch) ||
+      tNameLat.includes(searchTerm.toLowerCase());
 
     return matchesCategory && matchesFormula && matchesSearch;
   });
 
   const suggestions = searchTerm.length > 0
     ? TRUCKS_DATA.filter(truck => {
-        const nameCyr = (truck.name || "").toLowerCase();
-        return nameCyr.includes(searchTerm.toLowerCase()) || nameCyr.includes(cyrillicSearch);
-      }).slice(0, 10) 
+      const nameCyr = (truck.name || "").toLowerCase();
+      return nameCyr.includes(searchTerm.toLowerCase()) || nameCyr.includes(cyrillicSearch);
+    }).slice(0, 10)
     : [];
 
   const categories = [
@@ -280,9 +476,10 @@ const TruckDetails = ({ lang, setLang }) => {
   const truck = TRUCKS_DATA.find(t => t.id === id);
   const ui = UI_TEXT[lang];
 
+  const [isCalcOpen, setIsCalcOpen] = useState(false);
+
   if (!truck) return <div className="app-container">{ui.notfound}</div>;
 
-  // Yordamchi funksiya: Agar ma'lumot obyekt bo'lsa tanlangan tilni qaytaradi, aks holda o'zini
   const getLangVal = (field) => {
     if (field && typeof field === 'object') return field[lang] || field['uz'];
     return field;
@@ -301,7 +498,11 @@ const TruckDetails = ({ lang, setLang }) => {
             <img src={truck.img} alt={truck.name} className="main-details-img" />
             <div className="main-title-box">
               <h1>{truck.name}</h1>
-              <div className="details-price">{truck.price}</div>
+              <div className="details-price" style={{ marginBottom: '15px' }}>{truck.price}</div>
+              {/* KALKULYATOR TUGMASI - CSS ga to'g'ri bog'landi */}
+              <button onClick={() => setIsCalcOpen(true)} className="calc-open-btn-trigger">
+                <Calculator size={18} /> {ui.calc.btn}
+              </button>
             </div>
           </div>
 
@@ -440,13 +641,15 @@ const TruckDetails = ({ lang, setLang }) => {
           </div>
         </div>
       </div>
+
+      {/* KALKULYATOR MODALI */}
+      <LeasingCalculatorModal isOpen={isCalcOpen} onClose={() => setIsCalcOpen(false)} truck={truck} lang={lang} />
     </div>
   );
 };
 
 // --- ASOSIY APP ---
 export default function App() {
-  // Til holatini localStorage'da saqlaymiz
   const [lang, setLang] = useState(localStorage.getItem('appLang') || 'uz');
 
   const handleSetLang = (newLang) => {
